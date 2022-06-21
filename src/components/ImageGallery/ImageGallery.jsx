@@ -3,16 +3,8 @@ import ImageGalleryItem from './ImageGalleryItem';
 import s from './ImageGallery.module.css';
 
 class ImageGallery extends Component {
-  // state = {
-  //   pics: [],
-  // };
-
-  // handleItemClick = activeId => {
-  //   this.setState({ activeId });
-  // };
-
   render() {
-    const { pics } = this.props;
+    const { pics, onItemClick } = this.props;
 
     return (
       <>
@@ -22,7 +14,7 @@ class ImageGallery extends Component {
               key={pic.id}
               alt={pic.tag}
               src={pic.webformatURL}
-              onItemClick={this.props.onItemClick}
+              onItemClick={() => onItemClick(pic)}
             />
           ))}
         </ul>

@@ -15,18 +15,14 @@ export class App extends Component {
     queryWord: '',
     pics: [],
     error: null,
-    activeId: null,
     status: 'idle',
     page: 1,
-    showModal: false,
+    // showModal: false,
     pickedPicture: null,
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    // console.log(`active img is ${this.state.activeId}`);
     if (prevState.queryWord !== this.state.queryWord) {
-      // console.log(this.props.query);
-      // console.log(prevProps.query);
       try {
         this.setState({ status: 'pending' });
         const pics = await API.getPictures(
@@ -75,25 +71,18 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  openModal = e => {
-    this.setState({ showModal: true, pickedPicture: e.target });
-    console.log(e.target);
+  openModal = pic => {
+    this.setState({ pickedPicture: pic });
+    console.log(pic);
+    // console.log(e.target);
   };
 
   closeModal = () => {
-    this.setState({ showModal: false });
+    this.setState({ pickedPicture: null });
   };
 
   render() {
-    const { pics, status, error, showModal, pickedPicture } = this.state;
-
-    // if (status === 'idle') {
-    //   return <p>Enter your query</p>;
-    // }
-
-    // if (status === 'pending') {
-    //   return <Loader />;
-    // }
+    const { pics, status, error, pickedPicture } = this.state;
 
     if (status === 'rejected') {
       return (
@@ -116,9 +105,9 @@ export class App extends Component {
           </>
         )}
 
-        {showModal && (
+        {pickedPicture && (
           <Modal
-            src={pickedPicture.src}
+            src={pickedPicture.largeImageURL}
             alt={pickedPicture.tags}
             onClose={this.closeModal}
           />

@@ -6,13 +6,15 @@ class ImageGalleryItem extends Component {
   // handleItemClick = () => {};
 
   render() {
+    const { id, src, alt, largeImageURL, onItemClick } = this.props;
     return (
-      <li key={this.props.id} className={s.galleryItem}>
+      <li key={id} className={s.galleryItem}>
         <img
           className={s.galleryItemImage}
-          src={this.props.src}
-          alt={this.props.alt}
-          onClick={this.props.onItemClick}
+          src={src}
+          alt={alt}
+          largeImageURL={largeImageURL}
+          onClick={onItemClick}
         />
       </li>
     );
