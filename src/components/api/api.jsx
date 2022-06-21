@@ -9,12 +9,5 @@ export const getPictures = async (queryWord, page) => {
   const response = await axios.get(
     `/?q=${queryWord}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
   );
-  // if (!this.state.pics) {
-  //   return Promise.reject(
-  //     new Error(
-  //       `нет картинок соответствующих запросу ${this.props.query}`
-  //     )
-  //   );
-  // }
   return response.data.hits;
 };

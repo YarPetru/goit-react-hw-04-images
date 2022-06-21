@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as API from './api/api';
 import { ToastContainer } from 'react-toastify';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Searchbar from './Searchbar';
@@ -29,7 +29,7 @@ export class App extends Component {
           this.state.queryWord,
           this.state.page
         );
-        this.setState({ pics, status: 'resolved' });
+        this.setState({ pics, status: 'resolved', page: 1 });
       } catch (error) {
         this.setState({ error, status: 'rejected' });
         console.log(error);
@@ -98,6 +98,13 @@ export class App extends Component {
 
         {status === 'pending' && <Loader />}
 
+        {status === 'resolved' &&
+          pics.length === 0 &&
+          toast.warn(
+            `Нет картинок соответствующих запросу ${this.state.queryWord}`,
+            { theme: 'colored' }
+          )}
+
         {status === 'resolved' && pics.length > 0 && (
           <>
             <ImageGallery pics={pics} onItemClick={this.openModal} />
@@ -118,16 +125,3 @@ export class App extends Component {
     );
   }
 }
-
-// {
-//       toast.warn(`Нет картинок соответствующих запросу ${this.props.query}`, {
-//         theme: 'colored',
-//         // ПОЧЕМУ ДВА РАЗ ПОЯВЛЯЕТСЯ, может лучше обработать в другом месте
-//       });
-//     }
-
-// if (!this.state.pics) {
-//   return Promise.reject(
-//     new Error(`нет картинок соответствующих запросу ${this.props.query}`)
-//   );
-// }
