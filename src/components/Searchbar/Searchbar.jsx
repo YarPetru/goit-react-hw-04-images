@@ -1,9 +1,14 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 import s from './Searchbar.module.css';
 import { FcSearch } from 'react-icons/fc';
 
 class Searchbar extends Component {
+  static propTypes = {
+    onGetWord: PropTypes.func.isRequired,
+  };
+
   state = {
     queryWord: '',
   };

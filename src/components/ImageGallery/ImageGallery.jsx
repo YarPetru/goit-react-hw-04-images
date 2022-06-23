@@ -1,8 +1,14 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import ImageGalleryItem from './ImageGalleryItem';
 import s from './ImageGallery.module.css';
 
 class ImageGallery extends Component {
+  static propTypes = {
+    pics: PropTypes.arrayOf(PropTypes.object).isRequired,
+    onItemClick: PropTypes.func,
+  };
+
   render() {
     const { pics, onItemClick } = this.props;
 
@@ -12,7 +18,7 @@ class ImageGallery extends Component {
           {pics.map(pic => (
             <ImageGalleryItem
               key={pic.id}
-              alt={pic.tag}
+              alt={pic.tags}
               src={pic.webformatURL}
               onItemClick={() => onItemClick(pic)}
             />

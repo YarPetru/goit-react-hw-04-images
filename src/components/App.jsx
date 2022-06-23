@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as API from './api/api';
 import { ToastContainer } from 'react-toastify';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Searchbar from './Searchbar';
@@ -21,7 +21,7 @@ export class App extends Component {
     pickedPicture: null,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(_, prevState) {
     if (prevState.queryWord !== this.state.queryWord) {
       try {
         this.setState({ status: 'pending' });
@@ -98,12 +98,12 @@ export class App extends Component {
 
         {status === 'pending' && <Loader />}
 
-        {status === 'resolved' &&
+        {/* {status === 'resolved' &&
           pics.length === 0 &&
           toast.warn(
             `Нет картинок соответствующих запросу ${this.state.queryWord}`,
             { theme: 'colored' }
-          )}
+          )} */}
 
         {status === 'resolved' && pics.length > 0 && (
           <>

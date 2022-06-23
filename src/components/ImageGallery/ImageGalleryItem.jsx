@@ -1,9 +1,14 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import s from './ImageGallery.module.css';
 
 // const ImageGalleryItem = ({ id, alt, src }) => {
 class ImageGalleryItem extends Component {
-  // handleItemClick = () => {};
+  static propTypes = {
+    onItemClick: PropTypes.func.isRequired,
+    src: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  };
 
   render() {
     const { id, src, alt, onItemClick } = this.props;
