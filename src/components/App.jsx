@@ -22,22 +22,43 @@ export const App = () => {
     const getPics = async () => {
       try {
         setStatus('pending');
-
         const pics = await API.getPictures(queryWord, page);
         console.log(pics);
-        setPics(pics);
-        setPage(1);
-        setStatus('resolved');
-        // this.setState({ pics, status: 'resolved', page: 1 });
+
+        if (queryWord && pics.length === 0) {
+          setPics(pics);
+          setStatus('resolved');
+          toast.warn(`Нет картинок соответствующих запросу ${queryWord}`, {
+            theme: 'colored',
+          });
+          return;
+        }
+
+        if (queryWord && pics.length > 0) {
+          // setPics(prevpics => [...prevpics, ...pics]);
+          setPics(pics);
+          setStatus('resolved');
+          makeScroll();
+          return;
+        }
+
+        if (pics.length > 0 && page > 1) {
+          setPics(prevpics => [...prevpics, ...pics]);
+          setStatus('resolved');
+          makeScroll();
+          return;
+        }
+
+        // setPage(1);
       } catch (error) {
         setError(error);
         setStatus('rejected');
         // this.setState({ error, status: 'rejected' });
         console.log(error);
+        return;
       }
     };
     getPics();
-    makeScroll();
   }, [page, queryWord]);
 
   // if (prevState.page !== this.state.page && this.state.page > 1) {
@@ -86,28 +107,15 @@ export const App = () => {
   return (
     <div className="container">
       <Searchbar onGetWord={handleFormSubmit} />
-
       {status === 'idle' && <p>Enter your query</p>}
-
       {status === 'pending' && <Loader />}
-
       {status === 'rejected' && (
         <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
       )}
 
-      {status === 'resolved' &&
-        pics.length === 0 &&
-        toast.warn(
-          `Нет картинок соответствующих запросу ${this.state.queryWord}`,
-          { theme: 'colored' }
-        )}
+      <ImageGallery pics={pics} onItemClick={openModal} />
 
-      {status === 'resolved' && pics.length > 0 && (
-        <>
-          <ImageGallery pics={pics} onItemClick={openModal} />
-          <Button onClick={handleLoadMore} />
-        </>
-      )}
+      <Button onClick={handleLoadMore} />
 
       {pickedPicture && (
         <Modal
@@ -116,7 +124,6 @@ export const App = () => {
           onClose={closeModal}
         />
       )}
-
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
