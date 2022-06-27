@@ -26,39 +26,34 @@ export const App = () => {
         console.log(pics);
 
         if (queryWord && pics.length === 0) {
-          setPics(pics);
           setStatus('resolved');
           toast.warn(`Нет картинок соответствующих запросу ${queryWord}`, {
             theme: 'colored',
           });
-          return;
+          return setPics([]);
         }
 
         if (queryWord && pics.length > 0) {
-          // setPics(prevpics => [...prevpics, ...pics]);
           setPics(pics);
           setStatus('resolved');
-          makeScroll();
           return;
         }
 
-        if (pics.length > 0 && page > 1) {
+        if (queryWord && pics.length > 0 && page > 1) {
           setPics(prevpics => [...prevpics, ...pics]);
           setStatus('resolved');
-          makeScroll();
+
           return;
         }
-
-        // setPage(1);
       } catch (error) {
         setError(error);
         setStatus('rejected');
-        // this.setState({ error, status: 'rejected' });
         console.log(error);
         return;
       }
     };
     getPics();
+    makeScroll();
   }, [page, queryWord]);
 
   // if (prevState.page !== this.state.page && this.state.page > 1) {
