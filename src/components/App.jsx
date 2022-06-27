@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as API from './api/api';
 import { ToastContainer } from 'react-toastify';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Searchbar from './Searchbar';
@@ -10,118 +10,114 @@ import Modal from './Modal';
 import Loader from './Loader';
 import Button from './Button';
 
-export class App extends Component {
-  state = {
-    queryWord: '',
-    pics: [],
-    error: null,
-    status: 'idle',
-    page: 1,
-    // showModal: false,
-    pickedPicture: null,
-  };
+export const App = () => {
+  const [queryWord, setQueryWord] = useState('');
+  const [pics, setPics] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pickedPicture, setPickedPicture] = useState(null);
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState(null);
 
-  async componentDidUpdate(_, prevState) {
-    if (prevState.queryWord !== this.state.queryWord) {
+  useEffect(() => {
+    const getPics = async () => {
       try {
-        this.setState({ status: 'pending' });
-        const pics = await API.getPictures(
-          this.state.queryWord,
-          this.state.page
-        );
-        this.setState({ pics, status: 'resolved', page: 1 });
+        setStatus('pending');
+
+        const pics = await API.getPictures(queryWord, page);
+        console.log(pics);
+        setPics(pics);
+        setPage(1);
+        setStatus('resolved');
+        // this.setState({ pics, status: 'resolved', page: 1 });
       } catch (error) {
-        this.setState({ error, status: 'rejected' });
+        setError(error);
+        setStatus('rejected');
+        // this.setState({ error, status: 'rejected' });
         console.log(error);
       }
-    }
+    };
+    getPics();
+    makeScroll();
+  }, [page, queryWord]);
 
-    if (prevState.page !== this.state.page && this.state.page > 1) {
-      try {
-        this.setState({ status: 'pending' });
-        const newPics = await API.getPictures(
-          this.state.queryWord,
-          this.state.page
-        );
+  // if (prevState.page !== this.state.page && this.state.page > 1) {
+  //   try {
+  //     this.setState({ status: 'pending' });
+  //     const newPics = await API.getPictures(
+  //       this.state.queryWord,
+  //       this.state.page
+  //     );
 
-        this.setState(prevState => ({
-          pics: [...prevState.pics, ...newPics],
-          status: 'resolved',
-        }));
-      } catch (error) {
-        this.setState({ error, status: 'rejected' });
-        console.log(error);
-      }
-    }
-    this.makeScroll();
-  }
+  //     this.setState(prevState => ({
+  //       pics: [...prevState.pics, ...newPics],
+  //       status: 'resolved',
+  //     }));
+  //   } catch (error) {
+  //     this.setState({ error, status: 'rejected' });
+  //     console.log(error);
+  //   }
+  // }
 
-  handleFormSubmit = queryWord => {
-    this.setState({ queryWord });
+  const handleFormSubmit = queryWord => {
+    setQueryWord(queryWord);
   };
 
-  makeScroll = () => {
+  const makeScroll = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: 'smooth',
     });
   };
 
-  handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+    // this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  openModal = pic => {
-    this.setState({ pickedPicture: pic });
+  const openModal = pic => {
+    setPickedPicture(pic);
     console.log(pic);
-    // console.log(e.target);
   };
 
-  closeModal = () => {
-    this.setState({ pickedPicture: null });
+  const closeModal = () => {
+    setPickedPicture(null);
   };
 
-  render() {
-    const { pics, status, error, pickedPicture } = this.state;
+  return (
+    <div className="container">
+      <Searchbar onGetWord={handleFormSubmit} />
 
-    if (status === 'rejected') {
-      return (
+      {status === 'idle' && <p>Enter your query</p>}
+
+      {status === 'pending' && <Loader />}
+
+      {status === 'rejected' && (
         <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
-      );
-    }
+      )}
 
-    return (
-      <div className="container">
-        <Searchbar onGetWord={this.handleFormSubmit} />
-
-        {status === 'idle' && <p>Enter your query</p>}
-
-        {status === 'pending' && <Loader />}
-
-        {/* {status === 'resolved' &&
-          pics.length === 0 &&
-          toast.warn(
-            `Нет картинок соответствующих запросу ${this.state.queryWord}`,
-            { theme: 'colored' }
-          )} */}
-
-        {status === 'resolved' && pics.length > 0 && (
-          <>
-            <ImageGallery pics={pics} onItemClick={this.openModal} />
-            <Button onClick={this.handleLoadMore} />
-          </>
+      {status === 'resolved' &&
+        pics.length === 0 &&
+        toast.warn(
+          `Нет картинок соответствующих запросу ${this.state.queryWord}`,
+          { theme: 'colored' }
         )}
 
-        {pickedPicture && (
-          <Modal
-            src={pickedPicture.largeImageURL}
-            alt={pickedPicture.tags}
-            onClose={this.closeModal}
-          />
-        )}
+      {status === 'resolved' && pics.length > 0 && (
+        <>
+          <ImageGallery pics={pics} onItemClick={openModal} />
+          <Button onClick={handleLoadMore} />
+        </>
+      )}
 
-        <ToastContainer position="top-center" autoClose={2000} />
-      </div>
-    );
-  }
-}
+      {pickedPicture && (
+        <Modal
+          src={pickedPicture.largeImageURL}
+          alt={pickedPicture.tags}
+          onClose={closeModal}
+        />
+      )}
+
+      <ToastContainer position="top-center" autoClose={2000} />
+    </div>
+  );
+};

@@ -1,33 +1,29 @@
-import { Component } from 'react';
+// import { useState } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from './ImageGalleryItem';
 import s from './ImageGallery.module.css';
 
-class ImageGallery extends Component {
-  static propTypes = {
-    pics: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onItemClick: PropTypes.func,
-  };
+const ImageGallery = ({ pics, onItemClick }) => {
+  return (
+    <>
+      <ul className={s.gallery}>
+        {pics.map(pic => (
+          <ImageGalleryItem
+            key={pic.id}
+            alt={pic.tags}
+            src={pic.webformatURL}
+            onItemClick={() => onItemClick(pic)}
+          />
+        ))}
+      </ul>
+    </>
+  );
+};
 
-  render() {
-    const { pics, onItemClick } = this.props;
-
-    return (
-      <>
-        <ul className={s.gallery}>
-          {pics.map(pic => (
-            <ImageGalleryItem
-              key={pic.id}
-              alt={pic.tags}
-              src={pic.webformatURL}
-              onItemClick={() => onItemClick(pic)}
-            />
-          ))}
-        </ul>
-      </>
-    );
-  }
-}
+ImageGallery.propTypes = {
+  pics: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onItemClick: PropTypes.func,
+};
 
 // ----------------- class OLD ImageGallery extends Component {
 //   state = {
