@@ -27,9 +27,12 @@ export const App = () => {
 
         if (queryWord && pics.length === 0) {
           setStatus('resolved');
-          toast.warn(`Нет картинок соответствующих запросу ${queryWord}`, {
-            theme: 'colored',
-          });
+          toast.warn(
+            `There are no picturues related to your query: ${queryWord}`,
+            {
+              theme: 'colored',
+            }
+          );
           return setPics([]);
         }
 
@@ -42,7 +45,6 @@ export const App = () => {
         if (queryWord && pics.length > 0 && page > 1) {
           setPics(prevpics => [...prevpics, ...pics]);
           setStatus('resolved');
-
           return;
         }
       } catch (error) {
@@ -87,7 +89,6 @@ export const App = () => {
 
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
-    // this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   const openModal = pic => {
@@ -108,9 +109,12 @@ export const App = () => {
         <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
       )}
 
-      <ImageGallery pics={pics} onItemClick={openModal} />
-
-      <Button onClick={handleLoadMore} />
+      {status === 'resolved' && pics.length > 0 && (
+        <>
+          <ImageGallery pics={pics} onItemClick={openModal} />
+          <Button onClick={handleLoadMore} />
+        </>
+      )}
 
       {pickedPicture && (
         <Modal

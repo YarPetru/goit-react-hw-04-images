@@ -2,7 +2,6 @@ import { ThreeDots } from 'react-loader-spinner';
 
 const Loader = () => {
   const style = {
-    // margin: '0 auto',
     display: 'flex',
     justifyContent: 'center',
   };

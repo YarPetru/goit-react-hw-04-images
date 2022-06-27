@@ -5,15 +5,7 @@ import s from './Searchbar.module.css';
 import { FcSearch } from 'react-icons/fc';
 
 const Searchbar = ({ onGetWord }) => {
-  // static propTypes = {
-  //   onGetWord: PropTypes.func.isRequired,
-  // };
-
   const [queryWord, setQueryWord] = useState('');
-
-  // state = {
-  //   queryWord: '',
-  // };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -23,7 +15,7 @@ const Searchbar = ({ onGetWord }) => {
       });
     }
     onGetWord(queryWord);
-    // setQueryWord('');
+    setQueryWord('');
   };
 
   const handleInputChange = e => {
