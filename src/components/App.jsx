@@ -39,8 +39,8 @@ export const App = () => {
           return setPics([]);
         }
         setPics(prevpics => [...prevpics, ...pics]);
-        setStatus('resolved');
         makeScroll();
+        setStatus('resolved');
       } catch (error) {
         setError(error);
         setStatus('rejected');
@@ -66,10 +66,22 @@ export const App = () => {
   };
 
   const makeScroll = () => {
+    console.log('MakeScroll');
+    const { height: cardHeight } = document
+      .querySelector('ul')
+      .getBoundingClientRect();
+
+    console.log(cardHeight);
+
     window.scrollTo({
-      top: document.documentElement.scrollHeight,
+      top: cardHeight * 2.3,
       behavior: 'smooth',
     });
+
+    // window.scrollTo({
+    //   top: document.documentElement.scrollHeight,
+    //   behavior: 'smooth',
+    // });
   };
 
   const openModal = pic => {
@@ -146,6 +158,35 @@ export const App = () => {
 //         onClose={closeModal}
 //       />
 //     )}
+//     <ToastContainer position="top-center" autoClose={2000} />
+//   </div>
+// );
+
+// не стейт-машина
+// return (
+//   <div className="container">
+//     <Searchbar onGetWord={handleFormSubmit} />
+
+//     {queryWord === '' && <p>Enter your query...</p>}
+
+//     {status === 'pending' && <Loader />}
+
+//     {error && (
+//       <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
+//     )}
+
+//     <ImageGallery pics={pics} onItemClick={openModal} />
+
+//     {pics.length !== 0 && <Button onClick={handleLoadMore} />}
+
+//     {pickedPicture && (
+//       <Modal
+//         src={pickedPicture.largeImageURL}
+//         alt={pickedPicture.tags}
+//         onClose={closeModal}
+//       />
+//     )}
+
 //     <ToastContainer position="top-center" autoClose={2000} />
 //   </div>
 // );
