@@ -29,7 +29,7 @@ export const App = () => {
         console.log(pics);
 
         if (queryWord && pics.length === 0) {
-          setStatus('resolved');
+          // setStatus('resolved');
           toast.warn(
             `There are no picturues related to your query: ${queryWord}`,
             {
@@ -40,6 +40,7 @@ export const App = () => {
         }
         setPics(prevpics => [...prevpics, ...pics]);
         setStatus('resolved');
+        makeScroll();
       } catch (error) {
         setError(error);
         setStatus('rejected');
@@ -49,7 +50,7 @@ export const App = () => {
     };
     // MakeScroll не срабатывает.
     getPics();
-    makeScroll();
+    // makeScroll();
   }, [page, queryWord]);
 
   const handleFormSubmit = queryWord => {
@@ -59,16 +60,16 @@ export const App = () => {
     // makeScroll();
   };
 
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+    // makeScroll();
+  };
+
   const makeScroll = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: 'smooth',
     });
-  };
-
-  const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1);
-    // makeScroll();
   };
 
   const openModal = pic => {
@@ -83,18 +84,18 @@ export const App = () => {
   return (
     <div className="container">
       <Searchbar onGetWord={handleFormSubmit} />
-      {status === 'idle' && <p>Enter your query</p>}
+
+      {queryWord === '' && <p>Enter your query...</p>}
+
       {status === 'pending' && <Loader />}
-      {status === 'rejected' && (
+
+      {error && (
         <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
       )}
 
-      {status === 'resolved' && pics.length > 0 && (
-        <>
-          <ImageGallery pics={pics} onItemClick={openModal} />
-          <Button onClick={handleLoadMore} />
-        </>
-      )}
+      <ImageGallery pics={pics} onItemClick={openModal} />
+
+      {pics.length !== 0 && <Button onClick={handleLoadMore} />}
 
       {pickedPicture && (
         <Modal
@@ -103,6 +104,7 @@ export const App = () => {
           onClose={closeModal}
         />
       )}
+
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
@@ -119,3 +121,31 @@ export const App = () => {
 //   setStatus('resolved');
 //   return;
 // }
+
+// ----------------STATE-MACHINE-----
+// return (
+//   <div className="container">
+//     <Searchbar onGetWord={handleFormSubmit} />
+//     {status === 'idle' && <p>Enter your query</p>}
+//     {status === 'pending' && <Loader />}
+//     {status === 'rejected' && (
+//       <p>{`Oops. Something went wrong :( Please try again:${error.message}`}</p>
+//     )}
+
+//     {status === 'resolved' && pics.length > 0 && (
+//       <>
+//         <ImageGallery pics={pics} onItemClick={openModal} />
+//         <Button onClick={handleLoadMore} />
+//       </>
+//     )}
+
+//     {pickedPicture && (
+//       <Modal
+//         src={pickedPicture.largeImageURL}
+//         alt={pickedPicture.tags}
+//         onClose={closeModal}
+//       />
+//     )}
+//     <ToastContainer position="top-center" autoClose={2000} />
+//   </div>
+// );
