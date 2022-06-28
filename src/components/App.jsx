@@ -19,6 +19,9 @@ export const App = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (queryWord === '') {
+      return;
+    }
     const getPics = async () => {
       try {
         setStatus('pending');
@@ -35,18 +38,8 @@ export const App = () => {
           );
           return setPics([]);
         }
-
-        if (queryWord && pics.length > 0) {
-          setPics(pics);
-          setStatus('resolved');
-          return;
-        }
-
-        if (queryWord && pics.length > 0 && page > 1) {
-          setPics(prevpics => [...prevpics, ...pics]);
-          setStatus('resolved');
-          return;
-        }
+        setPics(prevpics => [...prevpics, ...pics]);
+        setStatus('resolved');
       } catch (error) {
         setError(error);
         setStatus('rejected');
@@ -54,30 +47,16 @@ export const App = () => {
         return;
       }
     };
+    // MakeScroll не срабатывает.
     getPics();
     makeScroll();
   }, [page, queryWord]);
 
-  // if (prevState.page !== this.state.page && this.state.page > 1) {
-  //   try {
-  //     this.setState({ status: 'pending' });
-  //     const newPics = await API.getPictures(
-  //       this.state.queryWord,
-  //       this.state.page
-  //     );
-
-  //     this.setState(prevState => ({
-  //       pics: [...prevState.pics, ...newPics],
-  //       status: 'resolved',
-  //     }));
-  //   } catch (error) {
-  //     this.setState({ error, status: 'rejected' });
-  //     console.log(error);
-  //   }
-  // }
-
   const handleFormSubmit = queryWord => {
     setQueryWord(queryWord);
+    setPage(1);
+    setPics([]);
+    // makeScroll();
   };
 
   const makeScroll = () => {
@@ -89,6 +68,7 @@ export const App = () => {
 
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
+    // makeScroll();
   };
 
   const openModal = pic => {
@@ -127,3 +107,15 @@ export const App = () => {
     </div>
   );
 };
+
+// if (queryWord && pics.length > 0) {
+//   setPics(pics);
+//   setStatus('resolved');
+//   return;
+// }
+
+// if (queryWord && pics.length > 0 && page > 1) {
+//   setPics(prevpics => [...prevpics, ...pics]);
+//   setStatus('resolved');
+//   return;
+// }
