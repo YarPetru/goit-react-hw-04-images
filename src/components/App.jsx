@@ -26,10 +26,9 @@ export const App = () => {
       try {
         setStatus('pending');
         const pics = await API.getPictures(queryWord, page);
-        console.log(pics);
-
+        // console.log(pics);
         if (queryWord && pics.length === 0) {
-          // setStatus('resolved');
+          setStatus('resolved');
           toast.warn(
             `There are no picturues related to your query: ${queryWord}`,
             {
@@ -39,7 +38,6 @@ export const App = () => {
           return setPics([]);
         }
         setPics(prevpics => [...prevpics, ...pics]);
-        makeScroll();
         setStatus('resolved');
       } catch (error) {
         setError(error);
@@ -57,32 +55,30 @@ export const App = () => {
     setQueryWord(queryWord);
     setPage(1);
     setPics([]);
-    // makeScroll();
   };
 
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
-    // makeScroll();
   };
 
-  const makeScroll = () => {
-    console.log('MakeScroll');
-    const { height: cardHeight } = document
-      .querySelector('ul')
-      .getBoundingClientRect();
+  // const makeScroll = () => {
+  //   console.log('MakeScroll');
+  //   const { height: cardHeight } = document
+  //     .querySelector('ul')
+  //     .getBoundingClientRect();
 
-    console.log(cardHeight);
+  //   console.log(cardHeight);
 
-    window.scrollTo({
-      top: cardHeight * 2.3,
-      behavior: 'smooth',
-    });
+  //   window.scrollBy({
+  //     top: cardHeight * 2.3,
+  //     behavior: 'smooth',
+  //   });
 
-    // window.scrollTo({
-    //   top: document.documentElement.scrollHeight,
-    //   behavior: 'smooth',
-    // });
-  };
+  // window.scrollTo({
+  //   top: document.documentElement.scrollHeight,
+  //   behavior: 'smooth',
+  // });
+  // };
 
   const openModal = pic => {
     setPickedPicture(pic);
@@ -122,18 +118,6 @@ export const App = () => {
   );
 };
 
-// if (queryWord && pics.length > 0) {
-//   setPics(pics);
-//   setStatus('resolved');
-//   return;
-// }
-
-// if (queryWord && pics.length > 0 && page > 1) {
-//   setPics(prevpics => [...prevpics, ...pics]);
-//   setStatus('resolved');
-//   return;
-// }
-
 // ----------------STATE-MACHINE-----
 // return (
 //   <div className="container">
@@ -162,7 +146,7 @@ export const App = () => {
 //   </div>
 // );
 
-// не стейт-машина
+// ========================== NON STATE-MACHINE=======================
 // return (
 //   <div className="container">
 //     <Searchbar onGetWord={handleFormSubmit} />
@@ -186,7 +170,29 @@ export const App = () => {
 //         onClose={closeModal}
 //       />
 //     )}
-
 //     <ToastContainer position="top-center" autoClose={2000} />
 //   </div>
 // );
+
+// ==================== MAKESCROLL FUNCTION ===================
+
+// ================= 1 =========================
+// const makeScroll = () => {
+//   console.log('MakeScroll');
+//   const { height: cardHeight } = document
+//     .querySelector('ul')
+//     .getBoundingClientRect();
+
+//   console.log(cardHeight);
+
+//   window.scrollBy({
+//     top: cardHeight * 2.3,
+//     behavior: 'smooth',
+//   });
+
+// ================= 2 =========================
+// window.scrollTo({
+//   top: document.documentElement.scrollHeight,
+//   behavior: 'smooth',
+// });
+// };
